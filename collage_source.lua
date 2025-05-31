@@ -96,6 +96,7 @@ function CollageSource:drawPoints()
     lx, ly = x, y
   end
 
+  -- transform everything to screen coords
   local fx, fy = self.transform:transformPoint(unpack(self.coords[1]))
 
   if dist(fx, fy, mx, my) < DISTANCE_TO_CLOSE then
@@ -116,19 +117,19 @@ function CollageSource:mousepressed(x, y, button)
   if self.closed then return end
 
   local mx, my = self.transform:inverseTransformPoint(x, y)
-  if not insideRect(mx, my, 0, 0, self.cnv:getDimensions()) then
-    return
+  local isInside = insideRect(mx, my, 0, 0, self.cnv:getDimensions())
+
+  if not button == 1 then return end
+
+  if #self.coords > 0 then
+    local cx, cy = self.transform:transformPoint(unpack(self.coords[1]))
+    if dist(x, y, cx, cy) < DISTANCE_TO_CLOSE and #self.coords > 2 then
+      self.closed = true
+      return
+    end
   end
 
-  if button == 1 then
-    for _, c in ipairs(self.coords) do
-      local cx, cy = self.transform:transformPoint(unpack(c))
-      if dist(x, y, cx, cy) < DISTANCE_TO_CLOSE and #self.coords > 2 then
-        self.closed = true
-        return
-      end
-    end
-
+  if isInside then
     table.insert(self.coords, {self.transform:inverseTransformPoint(x, y)})
   end
 end
