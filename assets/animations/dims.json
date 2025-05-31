@@ -3,7 +3,7 @@
         "width": 1250,
         "height": 938,
         "x": 1160,
-        "y": 597,
+        "y": 640,
         "scale": 0.16,
         "duration": 2
     },
@@ -22,5 +22,13 @@
         "y": 34,
         "scale": 0.75,
         "duration": 15
+	},
+	"reset_button_spritesheet.png":{
+		"width": 320,
+        "height": 120,
+        "x": 120,
+        "y": 660,
+        "scale": 0.75,
+        "duration": 5
 	}
 }
