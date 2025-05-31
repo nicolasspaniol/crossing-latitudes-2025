@@ -18,7 +18,6 @@ end
 
 function love.draw()
   colSrc:draw()
-  colSrc:drawPoints()
 end
 
 

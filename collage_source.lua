@@ -79,6 +79,8 @@ function CollageSource:draw()
   love.graphics.setColor(1,1,1)
 
   love.graphics.draw(self.cnv, self.transform)
+
+  self:drawPoints()
 end
 
 
@@ -162,7 +164,7 @@ function CollageSource:getSlice()
       love.graphics.polygon("fill", tri)
     end
 
-    love.graphics.setBlendMode("multiply", "premultiplied")
+    love.graphics.setBlendMode("replace", "alphamultiply")
 
     love.graphics.draw(self.cnv)
 
