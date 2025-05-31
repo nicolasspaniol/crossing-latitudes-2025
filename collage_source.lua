@@ -16,6 +16,11 @@ local function dist(xa, ya, xb, yb)
 end
 
 
+local function insideRect(x, y, xa, ya, xb, yb)
+  return x <= xb and x >= xa and y <= yb and y >= ya
+end
+
+
 local function drawDashedLine(xa, ya, xb, yb)
   local dx = xb - xa
   local dy = yb - ya
@@ -109,6 +114,11 @@ end
 
 function CollageSource:mousepressed(x, y, button)
   if self.closed then return end
+
+  local mx, my = self.transform:inverseTransformPoint(x, y)
+  if not insideRect(mx, my, 0, 0, self.cnv:getDimensions()) then
+    return
+  end
 
   if button == 1 then
     for _, c in ipairs(self.coords) do
