@@ -24,7 +24,6 @@ end
 
 function love.draw()
   colSrc:draw()
-  colSrc:debugPoints()
   tkp:draw()
 end
 
@@ -34,11 +33,6 @@ function love.mousepressed(x, y, key)
   tkp:mousepressed(x, y, key, colSrc)
 
   local maybeSliceCnv = colSrc:getSlice()
-end
-
-
-function love.mousemoved(x, y)
-  colSrc:mousemoved(x, y)
 end
 
 

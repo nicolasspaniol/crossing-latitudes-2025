@@ -1,5 +1,7 @@
 local inspect = require "inspect/inspect"
 
+DISTANCE_TO_CLOSE = 40
+
 
 --- @class CollageSource
 local CollageSource = {}
@@ -11,6 +13,37 @@ local function dist(xa, ya, xb, yb)
   local dy = ya - yb
 
   return math.sqrt(dx * dx + dy * dy)
+end
+
+
+local function drawDashedLine(xa, ya, xb, yb)
+  local dx = xb - xa
+  local dy = yb - ya
+
+  local fill = false
+  local x, y = xa, ya
+  local lx, ly = xa, ya
+  local n = dist(xa, ya, xb, yb) / 100
+  local i = (2 * love.timer.getTime() % 1) * .2 / n
+
+  while i < 1 do
+    fill = not fill
+
+    x = xa + dx * i
+    y = ya + dy * i
+
+    if fill then
+      love.graphics.line(lx, ly, x, y)
+    end
+
+    lx, ly = x, y
+
+    i = i + .1 / n
+  end
+
+  if fill then
+    love.graphics.line(lx, ly, xb, yb)
+  end
 end
 
 
@@ -44,24 +77,26 @@ function CollageSource:draw()
 end
 
 
-function CollageSource:debugPoints()
+function CollageSource:drawPoints()
   if #self.coords == 0 then return end
 
-  love.graphics.setColor(1,1,1)
+  love.graphics.setColor(1, 1, 1)
 
   local mx, my = love.mouse.getPosition()
   local lx, ly = self.transform:transformPoint(unpack(self.coords[1]))
 
   for _, c in ipairs(self.coords) do
     local x, y = self.transform:transformPoint(unpack(c))
-    love.graphics.line(lx, ly, x, y)
+    drawDashedLine(lx, ly, x, y)
     lx, ly = x, y
   end
 
-  if self.closed then
-    love.graphics.line(lx, ly, unpack(self.coords[1]))
+  local fx, fy = self.transform:transformPoint(unpack(self.coords[1]))
+
+  if dist(fx, fy, mx, my) < DISTANCE_TO_CLOSE then
+    drawDashedLine(lx, ly, fx, fy)
   else
-    love.graphics.line(lx, ly, mx, my)
+    drawDashedLine(lx, ly, mx, my)
   end
 end
 
@@ -75,24 +110,17 @@ end
 function CollageSource:mousepressed(x, y, button)
   if self.closed then return end
 
-  local transform = self.transform:inverse()
-  x, y = transform:transformPoint(x, y)
-
   if button == 1 then
     for _, c in ipairs(self.coords) do
-      if dist(x, y, unpack(c)) < 200 and #self.coords > 2 then
+      local cx, cy = self.transform:transformPoint(unpack(c))
+      if dist(x, y, cx, cy) < DISTANCE_TO_CLOSE and #self.coords > 2 then
         self.closed = true
         return
       end
     end
 
-    table.insert(self.coords, {x, y})
+    table.insert(self.coords, {self.transform:inverseTransformPoint(x, y)})
   end
-end
-
-
-function CollageSource:mousemoved(x, y)
-  if not self.closed then return end
 end
 
 
