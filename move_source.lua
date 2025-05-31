@@ -29,7 +29,8 @@ function MoveSource:mousemoved()
   if self.pressed then
     local xs = math.min(math.max(x-self.dx, 0), self.winw-self.dx)
     local ys = math.min(math.max(y-self.dy, 0), self.winh-self.dy)
-    self.tfm:setTransformation(xs, ys)
+    local xo, yo = self.tfm:transformPoint(0,0)
+    self.tfm = self.tfm:translate(xs-xo, ys-yo)
     if (x < 1 or x > self.winw-2) or (y < 1 or y > self.winh-2) then
       self.pressed = false
     end
@@ -40,7 +41,8 @@ end
 function MoveSource:mousepressed(x, y, key)
   if key == 1 then
     if self.pressed then
-      self.tfm:setTransformation(x-self.dx, y-self.dy)
+      local xo, yo = self.tfm:transformPoint(0,0)
+      self.tfm = self.tfm:translate(x-xo-self.dx, y-yo-self.dy)
       self.pressed = false
     else
       local xls, yls = self.tfm:transformPoint(0,0)
