@@ -1,9 +1,15 @@
 import os
 from PIL import Image
+import sys
 
 
 # PNG Sequence directory
-dir_path = "path/to/your/png_sequence"
+if len(sys.argv) < 2:
+  print("Usage: python to_sheet.py <png_sequence_directory>")
+  exit(1)
+
+dir_path = sys.argv[1]
+output_name = os.path.basename(os.path.normpath(dir_path)).lower() + "_spritesheet.png"
 
 if not os.path.exists(dir_path):
   print(f"Directory {dir_path} does not exist.")
@@ -45,8 +51,8 @@ for img in images:
 
 # save spritesheet
 sheet.save(
-  f"{dir_path.lower()}_spritesheet.png",
+  f"{output_name}",
 )
 sheet.close()
 
-print(f"Spritesheet saved as {dir_path.lower()}_spritesheet.png")
+print(f"Spritesheet saved as {output_name} in the current directory.")
