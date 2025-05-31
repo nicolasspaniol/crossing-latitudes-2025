@@ -14,5 +14,13 @@
         "y": 60,
         "scale": 0.75,
         "duration": 5
-    }
+    },
+	"settings_button_spritesheet.png":{
+		"width": 100,
+        "height": 100,
+        "x": 34,
+        "y": 34,
+        "scale": 0.75,
+        "duration": 15
+	}
 }
