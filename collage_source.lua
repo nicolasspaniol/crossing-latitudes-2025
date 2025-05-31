@@ -208,7 +208,7 @@ function CollageSource:getSlice()
     end
   end)
 
-  self:intersectPolyPoints(poly, self.points)
+  self:intersectPolyPoints(poly)
 
   -- reset poly selection
   self.closed = false
