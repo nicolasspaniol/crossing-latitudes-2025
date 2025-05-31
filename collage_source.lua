@@ -1,11 +1,38 @@
 local inspect = require "inspect/inspect"
 
-DISTANCE_TO_CLOSE = 40
+DISTANCE_TO_CLOSE = 20
+DASH_INCREMENT = .1
 
 
 --- @class CollageSource
 local CollageSource = {}
 CollageSource.__index = CollageSource
+
+
+function CollageSource:intersectPolyPoints(poly)
+  local tris = love.math.triangulate(poly)
+  for i, tri in ipairs(tris) do
+    tris[i] = love.physics.newPolygonShape(tri)
+  end
+
+  local contains = {}
+  for label, ps in pairs(self.points) do
+    contains[label] = 0
+
+    for _, tri in ipairs(tris) do
+      for i = 1, #ps, 2 do
+        local x, y = self.transform:inverseTransformPoint(ps[i], ps[i + 1])
+        if tri:testPoint(0, 0, 0, x, y) then
+          contains[label] = contains[label] + 1
+        end
+      end
+    end
+
+    contains[label] = contains[label] * 2 / #ps
+  end
+
+  print(inspect(contains))
+end
 
 
 local function dist(xa, ya, xb, yb)
@@ -29,7 +56,7 @@ local function drawDashedLine(xa, ya, xb, yb)
   local x, y = xa, ya
   local lx, ly = xa, ya
   local n = dist(xa, ya, xb, yb) / 100
-  local i = (2 * love.timer.getTime() % 1) * .2 / n
+  local i = (2 * love.timer.getTime() % 1) * 2 * DASH_INCREMENT / n
 
   while i < 1 do
     fill = not fill
@@ -43,7 +70,7 @@ local function drawDashedLine(xa, ya, xb, yb)
 
     lx, ly = x, y
 
-    i = i + .1 / n
+    i = i + DASH_INCREMENT / n
   end
 
   if fill then
@@ -53,10 +80,11 @@ end
 
 
 --- @param img love.Image
-function CollageSource.new(img)
+function CollageSource.new(img, points)
   local w, h = img:getDimensions()
 
   local o = {
+    points = points,
     cnv = love.graphics.newCanvas(w, h),
     transform = love.math.newTransform(),
     coords = {},
@@ -179,6 +207,8 @@ function CollageSource:getSlice()
       love.graphics.polygon("fill", tri)
     end
   end)
+
+  self:intersectPolyPoints(poly, self.points)
 
   -- reset poly selection
   self.closed = false
