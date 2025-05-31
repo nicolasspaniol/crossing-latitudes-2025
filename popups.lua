@@ -20,7 +20,6 @@ PopUp.new = function(self, ux, uy, uw, uh, bx, by, bw, bh, closeImage, bttImage,
     object.UI.inScreen = false
     object.UI.image = UIImage
     
-    -- print(object.Btt.canvas, bw, bh)
     object.Btt = Buttons:new(bttImage, bx, by, bw, bh, bttFunction)
     local cx, cy = object.UI.coords.x + object.UI.size.width*0.8, object.UI.coords.y
     local cw, ch = object.UI.size.width*0.2, object.UI.size.width*0.2
@@ -64,13 +63,9 @@ PopUp.changeUIState = function(self, open)
 end
 
 PopUp.drawUIClose = function(self)
-    
-
     if self.UI.close.drawUpdate then
-        print(self.UI.close.coords.x-self.UI.coords.x, 1)
         self.UI.close:draw(true, self.UI.close.coords.x-self.UI.coords.x, self.UI.close.coords.y-self.UI.coords.y)
     end
-    print(self.UI.close.coords.x-self.UI.coords.x)
 end
 
 PopUp.drawUI = function(self)
@@ -100,7 +95,6 @@ PopUp.draw = function(self)
             self:drawUIClose()
             love.graphics.setCanvas()
         end
-        -- love.graphics.setCanvas(self.UI.)
         love.graphics.draw(self.UI.canvas, self.UI.coords.x, self.UI.coords.y)
     else
         if self.Btt.drawUpdate then
@@ -110,11 +104,9 @@ PopUp.draw = function(self)
             love.graphics.clear(0,0,0,0)
             self.Btt:draw(true)
             love.graphics.setCanvas()
-            -- love.graphics.draw(self)
         end
         love.graphics.setColor(1,1,1,1)
-        -- print(self.Btt.canvas)
-        love.graphics.draw(self.Btt.canvas, self.Btt.coords.x, self.Btt.coords.y)
+        if self.Btt.inScreen then love.graphics.draw(self.Btt.canvas, self.Btt.coords.x, self.Btt.coords.y) end
     end
 end
 

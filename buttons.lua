@@ -1,4 +1,4 @@
-Buttons = {}
+local Buttons = {}
 
 Buttons.new = function(self, image, x, y, width, height, actionFunction, object)
     object = object or {}

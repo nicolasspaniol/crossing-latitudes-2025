@@ -1,4 +1,4 @@
-Animation = {}
+local Animation = {}
 Animation.type = "animation"
 
 Animation.new = function(self, image, width, height, duration, filterMode)
