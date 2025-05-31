@@ -18,7 +18,7 @@ end
 
 function love.draw()
   colSrc:draw()
-  colSrc:debugPoints()
+  colSrc:drawPoints()
 end
 
 
@@ -26,9 +26,4 @@ function love.mousepressed(x, y, key)
   colSrc:mousepressed(x, y, key)
 
   local maybeSliceCnv = colSrc:getSlice()
-end
-
-
-function love.mousemoved(x, y)
-  colSrc:mousemoved(x, y)
 end
