@@ -1,46 +1,30 @@
 local json = require "json/json"
--- local inspect = require "inspect/inspect"
+local inspect = require "inspect/inspect"
 
-local points = {}
-local setPoints = {}
-local name = ''
-local numSets = 0
-local img = nil
+--- @class takePoints
+local takePoints = {}
+takePoints.__index = takePoints
 
-function love.load()
-  love.window.setMode(1280, 720)
-  img = love.graphics.newImage("imagem.png")
+
+function takePoints.new(x, y, width, height)
+  local o = {
+    topLeft = {x, y},
+    bottomRight = {width, height},
+    points = {},
+    setPoints = {},
+    name = '',
+    numSets = 0,
+  }
+  setmetatable(o, takePoints)
+  return o
 end
 
 
-function love.draw()
-    love.graphics.draw(img)
-    for i = 1,#points/2 do
-      love.graphics.circle("fill", points[2*i-1], points[2*i], 5)
-    end
-end
-
-
-function love.update(dt)
-end
-
-
-function love.mousepressed(x, y, key)
-  if key == 1 then
-    if x > 0 and x < img:getWidth() then
-        if y > 0 and y < img:getHeight() then
-          points[#points+1] = x
-          points[#points+1] = y
-        end
-    end
-  end
-end
-
-
-local function savePoints()
-  local file = io.open("setPoints.json", "w")
+local function savePoints(self)
+  local file = nil
+  file = io.open("setPoints.json", "w")
   if file then
-    file:write(json.encode(setPoints))
+    file:write(json.encode(self.setPoints))
     file:close()
   else
     print("error creating file")
@@ -48,25 +32,51 @@ local function savePoints()
 end
 
 
-function love.keypressed(key)
-  if key == 'escape' then
-    love.event.quit()
-  end
-  if key == 'n' then
-    if #points > 0 then
-      -- name = io.read("l")  // Não tava funcionando
-      name = 'teste'..numSets
-      numSets = numSets + 1
-      setPoints[name] = points
-      points = {}
-    end
-  end
-  if key == 's' then
-    if #points > 0 then
-      numSets = numSets + 1
-      name = 'teste'..numSets
-      setPoints[name] = points
-    end
-    savePoints()
+local function takeName(self)
+  if #self.points > 0 then
+    print("digite um nome para o conjunto:")
+    self.name = io.read()
+    self.numSets = self.numSets + 1
+    self.setPoints[self.name] = self.points
+    self.points = {}
   end
 end
+
+
+function takePoints:draw()
+    for i = 1,#self.points/2 do
+      love.graphics.circle("fill", self.points[2*i-1], self.points[2*i], 5)
+    end
+end
+
+
+function takePoints:mousepressed(x, y, key, collage)
+  if key == 1 then
+    if collage.closed then
+      takeName(self)
+    elseif x > self.topLeft[1] and x < self.bottomRight[1] then
+        if y > self.topLeft[2] and y < self.bottomRight[2] then
+          self.points[#self.points+1] = x
+          self.points[#self.points+1] = y
+        end
+    end
+  end
+end
+
+
+function takePoints:keypressed(key)
+  if key == 'escape' then
+    if #self.points > 0 then
+      takePoints:keypressed('s')
+    end
+    love.event.quit()
+  end
+  if key == 's' then
+    if #self.points > 0 then
+      takeName(self)
+    end
+    savePoints(self)
+  end
+end
+
+return takePoints
