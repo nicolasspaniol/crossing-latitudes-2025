@@ -4,6 +4,15 @@
         "height": 938,
         "x": 1160,
         "y": 597,
-        "scale": 0.16
+        "scale": 0.16,
+        "duration": 2
+    },
+    "send_button_spritesheet.png":{
+        "width": 300,
+        "height": 150,
+        "x": 1160,
+        "y": 60,
+        "scale": 0.75,
+        "duration": 5
     }
 }
