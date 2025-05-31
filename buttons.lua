@@ -44,10 +44,11 @@ Buttons.draw = function(self)
         sM = 1
     end
     if (self.image.type or "") == "animation" then
-        local qw, qh = self.image.quads:getDimensions()
-        local sx, sx = self.size.width/qw, self.size.height/qh
+        local _, _, qw, qh = self.image.quads[1]:getViewport()
+        local sx, sy = self.size.width/qw, self.size.height/qh
+        
         local x, y = self.coords.x + (1-sM)/2 * self.size.width, self.coords.y + (1-sM)/2 * self.size.height
-        self.image:draw(x, y, 0, sM*qw, sM*qh)
+        self.image:draw(x, y, 0, sM*sx, sM*sy)
     else
         local iw, ih = self.image:getDimensions()
         local x, y = self.coords.x + (1-sM)/2 * self.size.width, self.coords.y + (1-sM)/2 * self.size.height
