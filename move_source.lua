@@ -46,6 +46,8 @@ function MoveSource:draw()
     lc = c
   end
   love.graphics.line(lc[1], lc[2], unpack(self.poly[1]))
+
+  love.graphics.replaceTransform(love.math.newTransform())
 end
 
 
