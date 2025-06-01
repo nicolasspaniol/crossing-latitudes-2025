@@ -5,26 +5,27 @@ local Document = {}
 Document.__index = Document
 
 
-Document.isMoving = false
-
-Document.new = function(x, y, width, height, image, dType)
-  local bttFunction = function(self, collages, selCollIdx)
+function Document.new(x, y, width, height, image, dType)
+  local bttFunction = function(doc, collages, selCollIdx)
     if collages[selCollIdx] then
-      table.insert(Document.collages, collages[selCollIdx])
+      table.insert(doc.collages, collages[selCollIdx])
     else
-      Document.isMoving = not Document.isMoving
+      doc.isMoving = not doc.isMoving
     end
   end
 
-  Document.type = dType
-  Document.collages = {}
-  Document.canva = love.graphics.newCanvas(width, height)
-  Document.recorded_pos = { x = 0, y = 0 }
-  Document.button = Buttons:new(image, x, y, width, height, bttFunction)
-  Document.dx = 0
-  Document.dy = 0
-  
-  Document.button.draw = function(self, inCanvas, xCanvas, yCanvas)
+  local o = {
+    type = dType,
+    collages = {},
+    canva = love.graphics.newCanvas(width, height),
+    recorded_pos = { x = 0, y = 0 },
+    button = Buttons:new(image, x, y, width, height, bttFunction),
+    dx = 0,
+    dy = 0,
+    bttFunction = bttFunction
+  }
+
+  o.button.draw = function(self, inCanvas, xCanvas, yCanvas)
     self.drawUpdate = false
     local sM = 1
     if (self.image.type or "") == "animation" then
@@ -42,53 +43,54 @@ Document.new = function(x, y, width, height, image, dType)
     end
   end
 
-  return Document
+  setmetatable(o, Document)
+  return o
 end
 
 
-Document.update = function(mx, my, dt)
-  Document.button:update(mx, my, dt)
+function Document:update(mx, my, dt)
+  self.button:update(mx, my, dt)
 end
 
 
-Document.draw = function()
+function Document:draw()
   local xm, ym = love.mouse.getPosition()
-  if Document.isMoving then
-    Document.button.coords.x = xm - Document.dx
-    Document.button.coords.y = ym - Document.dy
+  if self.isMoving then
+    self.button.coords.x = xm - self.dx
+    self.button.coords.y = ym - self.dy
   end
-  Document.button:draw(true, Document.button.coords.x, Document.button.coords.y)
-  if #Document.collages > 0 then
-    for _, collage in Document.collages do
-      if Document.isMoving then
-        collage.transform:translate(xm, ym)
+  self.button:draw(true, self.button.coords.x, self.button.coords.y)
+  if #self.collages > 0 then
+    for _, collage in ipairs(self.collages) do
+      if self.isMoving then
+        collage.moved:setTransformation(xm - self.dx, ym - self.dy)
       end
-      collage.draw()
+      collage:draw()
     end
   end
 end
 
 
-Document.mousepressed = function(x, y, key, collages, selCollIdx)
-
+function Document:mousepressed(x, y, key, collages, selCollIdx)
   if key == 1 then
-    local xp = Document.button.coords.x
-    local yp = Document.button.coords.y
-    if Document.isMoving then
-      Document.isMoving = false
-    elseif (x > xp and x < xp + Document.canva:getWidth()) and (y > yp and y < yp + Document.canva:getHeight()) then
-      Document.bttFunction(Document, collages, selCollIdx)
-      Document.dx = x - xp
-      Document.dy = y - yp
-      if #Document.collages > 0 then
-        for _, collage in ipairs(Document.collages) do
-          local xc, yc = collage.transform:transformPoint(0,0)
-          collage.dx = x - xc
-          collage.dy = y - yc
-        end
-      end
+    local xp = self.button.coords.x
+    local yp = self.button.coords.y
+    if self.isMoving then
+      self.isMoving = false
+    elseif (x > xp and x < xp + self.canva:getWidth()) and (y > yp and y < yp + self.canva:getHeight()) then
+      self.isMoving = true
+      self.dx = x - xp
+      self.dy = y - yp
     end
   end
+end
+
+
+function Document:isHovering(x, y)
+  local xp = self.button.coords.x
+  local yp = self.button.coords.y
+
+  return (x > xp and x < xp + self.canva:getWidth()) and (y > yp and y < yp + self.canva:getHeight())
 end
 
 
