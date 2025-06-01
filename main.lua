@@ -18,6 +18,9 @@ MS = nil
 
 function love.load()
   love.window.setMode(1280, 720)
+  audio = love.audio.newSource("assets/chiphead64-11pm.ogg", "static")
+  audio:setLooping(true)
+  love.audio.play(audio)
   
 
   screen = 1

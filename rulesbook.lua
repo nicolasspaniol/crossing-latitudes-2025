@@ -162,14 +162,14 @@ RB.drawRulesButton = function(self, canvas)
     
   end
   love.graphics.setCanvas()
-  love.graphics.draw(self.AccessButtonCanvas, self.AccessButton.coords.x, self.AccessButton.coords.y)
+  love.graphics.draw(self.AccessButtonCanvas, self.AccessButton.coords.x + 55, self.AccessButton.coords.y + 50)
 end
 
 RB.drawPage = function(self)
   local _, _, w, h = self.pages[self.currPage].quads[1]:getViewport()
   local x, y = (self.Book.size.width - w)/2, (self.Book.size.height - h)/2
   love.graphics.setColor(1,1,1,1)
-  if self.pages[1] then self.pages[1]:draw(-200,-10,0,0.6,0.6) end--love.graphics.draw(self.pages[self.currPage], x, y) end
+  if self.pages[1] then self.pages[1]:draw(-100,70,0,0.8,0.8) end--love.graphics.draw(self.pages[self.currPage], x, y) end
 end
 
 RB.drawRulesBook = function(self)

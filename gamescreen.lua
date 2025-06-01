@@ -141,8 +141,9 @@ GS.draw2 = function(inCanvas, xCanvas, yCanvas, Canvas)
   GS.ResetButton:draw()
   GS.SendButton:draw()
   GS.Drawer:draw(inCanvas, xCanvas, yCanvas, Canvas)
-  GS.RB:draw()
   love.graphics.draw(GS.aRequest, 20, 400, 0, 1.5, 1.5)
+  GS.RB:draw()
+  
 
   if GS.printSomething == "vitoria" then
     love.graphics.setFont(love.graphics.newFont(40))
