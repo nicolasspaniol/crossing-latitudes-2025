@@ -26,7 +26,7 @@ function love.load()
   screen = 1
   local function func() screen = screen%2 + 1 end
   MS = ms.new(func)
-  GS.load("assets/news/0.jpg", "assets/reqPass0.png", "setPoints.json", "assets/passport_template.jpg")
+  GS.load("assets/news/0.jpg", "assets/reqPass0.png", "assets/points1.json", "assets/passport_template.jpg")
 end
 
 

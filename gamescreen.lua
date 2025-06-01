@@ -12,8 +12,8 @@ GS.Drawer = require "drawer"
 GS.RB = require "rulesbook"
 GS.document = {"assets/passport_template.jpg", "assets/driver_template.jpg", "assets/identity_template.jpg"}
 GS.news = {"assets/news/0.jpg", "assets/news/1.jpg", "assets/news/9.jpg"}
-GS.request = {"reqPass0.png", "assets/reqCNH01.png", "assets/reqId09.png"}
-GS.json = {"points1.json", "points2.json", "points3.json"}
+GS.request = {"assets/reqPass0.png", "assets/reqCNH01.png", "assets/reqId09.png"}
+GS.json = {"assets/points1.json", "assets/points2.json", "assets/points3.json"}
 GS.currIDX = 1
 GS.printSomething = nil
 GS.timerPS = 0
@@ -107,6 +107,7 @@ GS.update = function(dt)
     GS.timerPS = GS.timerPS + dt
   end
   if GS.timerPS > 3 then
+    GS.printSomething = nil
     GS.timePS = 0
   end
   local mx, my = love.mouse.getPosition()
@@ -244,11 +245,12 @@ GS.ScanDocument = function()
       GS.printSomething = "vitoria"
       GS.currIDX = GS.currIDX + 1
       if GS.currIDX <= 3 then
-        GS.load(GS.news[GS.currIDX], GS.request[currIDX], GS.json[currIDX], GS.document[currIDX])
+        GS.load(GS.news[GS.currIDX], GS.request[GS.currIDX], GS.json[GS.currIDX], GS.document[GS.currIDX])
       end
     else
       GS.printSomething = "derrota"
-      GS.load(GS.news[GS.currIDX], GS.request[currIDX], GS.json[currIDX], GS.document[currIDX])
+      print(GS.news[GS.currIDX], GS.request[GS.currIDX], GS.json[GS.currIDX], GS.document[GS.currIDX])
+      GS.load(GS.news[GS.currIDX], GS.request[GS.currIDX], GS.json[GS.currIDX], GS.document[GS.currIDX])
     end
 
 
