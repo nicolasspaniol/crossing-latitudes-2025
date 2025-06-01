@@ -10,6 +10,7 @@ MoveSource.__index = MoveSource
 --- @param transform love.Transform
 function MoveSource.new(cnv, transform, poly, labels)
   local t = {
+    fixed = false,
     cnv = cnv,
     tfm = transform:clone(),
     moved = love.math.newTransform(),
@@ -26,9 +27,11 @@ end
 function MoveSource:draw()
   love.graphics.replaceTransform(love.math.newTransform())
 
-  local x, y = love.mouse.getPosition()
-  if self.pressed then
-    self.moved:setTransformation(x, y)
+  if not self.fixed then
+    local x, y = love.mouse.getPosition()
+    if self.pressed then
+      self.moved:setTransformation(x, y)
+    end
   end
 
   love.graphics.setBlendMode("alpha", "premultiplied")
@@ -36,23 +39,25 @@ function MoveSource:draw()
   love.graphics.draw(self.cnv, self.rel * self.moved * self.tfm)
 
   love.graphics.replaceTransform(self.rel * self.moved * self.tfm)
-  love.graphics.setLineWidth(3)
-  local lc = self.poly[1]
+  if not self.fixed then
+    love.graphics.setLineWidth(5)
+    local lc = self.poly[1]
 
-  for i = 2, self.poly:len() do
-    local c = self.poly[i]
-    love.graphics.setColor(1,1,1,1)
-    love.graphics.line(lc[1], lc[2], c[1], c[2])
-    lc = c
+    for i = 2, self.poly:len() do
+      local c = self.poly[i]
+      love.graphics.setColor(1,1,1,1)
+      love.graphics.line(lc[1], lc[2], c[1], c[2])
+      lc = c
+    end
+    love.graphics.line(lc[1], lc[2], unpack(self.poly[1]))
   end
-  love.graphics.line(lc[1], lc[2], unpack(self.poly[1]))
 
   love.graphics.replaceTransform(love.math.newTransform())
 end
 
 
 function MoveSource:mousepressed(x, y, key)
-  if key == 1 then
+  if key == 1 and not self.fixed then
     local ix, iy = self.tfm:inverseTransformPoint(x, y)
     local ox, oy = self.tfm:transformPoint(0, 0)
 
