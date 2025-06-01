@@ -77,6 +77,7 @@ Stamps.drawStamps = function(self, inCanvas, xCanvas, yCanvas, Canvas)
   if self.inScreen and (self.Stamp.image.type or "") == "animation" then self.drawStamp = true end
   if self.Button.drawUpdate then self.drawUpdate = true end
   if self.drawStamp and (self.Stamp.coords.x ~= -1 and self.Stamp.coords.y ~= -1) then
+    self.drawStamp = false
       -- if inCanvas then self.drawStamp = false end
       local iw, ih = 0, 0
       if (self.Stamp.image.type or "") == "animation" then 

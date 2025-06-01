@@ -9,12 +9,12 @@ Drawer.createEntities = function(bx, by, bw, bh, images, openImage, closeImage, 
   Drawer.coords = { x = bx, y = by }
   Drawer.size = { width = bw, height = bh }
 
-  local stampSize = math.min(math.ceil(bh*0.4/2), bw*0.5/2)
-  local stx1, sty1 = bx + bw*0.225, by + bh*0.1
+  local stampSize = math.min(math.ceil(bh*0.55/2), bw*0.7/2)
+  local stx1, sty1 = bx + bw*0.4, by + bh*0.1
   
   Drawer.stamps = {}
   for i = 1, #images do
-    table.insert(Drawer.stamps, Stamps:new(stx1 + 0.8*((i-1) %2)*(bx + bw)/4, sty1 + 0.5*stampSize*(i-1), stampSize, stampSize, 
+    table.insert(Drawer.stamps, Stamps:new(stx1 + 0.8*((i-1) %2)*(bx + bw)/4, sty1 + stampSize*(i-1), stampSize, stampSize, 
       bx, by, bw, bh, stampWidthRatio*stampSize, stampHeightRatio*stampSize, images[i][1], images[i][2]))
   end
   local _, _, buttonSize1, buttonSize2 = openImage.quads[1]:getViewport()
@@ -28,7 +28,7 @@ Drawer.createEntities = function(bx, by, bw, bh, images, openImage, closeImage, 
   end
   -- print(pppw, ppph, pppx, pppy)
   -- Drawer.popUp = PopUp:new(pppx, pppy, pppw, ppph , pppx, pppy , buttonSize, buttonSize, closeImage, openImage, UIImage)
-  Drawer.popUp = PopUp:new(bx, by, 0.66*bw, 0.66*bh, -7.8, 100, 0.66*buttonSize1, 0.66*buttonSize2, closeImage, openImage, UIImage)
+  Drawer.popUp = PopUp:new(bx, by, bw, bh, -7.8, 100, buttonSize1, buttonSize2, closeImage, openImage, UIImage)
   Drawer.inScreen = true
   Drawer.lastActive = 0
 

@@ -52,9 +52,7 @@ end
 
 function takePoints:mousepressed(x, y, key, collage)
   if key == 1 then
-    if collage.closed then
-      takeName(self)
-    elseif x > self.topLeft[1] and x < self.bottomRight[1] then
+    if x > self.topLeft[1] and x < self.bottomRight[1] then
         if y > self.topLeft[2] and y < self.bottomRight[2] then
           self.points[#self.points+1] = x
           self.points[#self.points+1] = y
@@ -70,6 +68,9 @@ function takePoints:keypressed(key)
       takePoints:keypressed('s')
     end
     love.event.quit()
+  end
+  if key == 'n' then
+    takeName(self)
   end
   if key == 's' then
     if #self.points > 0 then

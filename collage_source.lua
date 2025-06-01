@@ -19,7 +19,8 @@ function CollageSource:intersectPolyPoints()
     contains[label] = 0
 
     for i = 1, #ps, 2 do
-      local x, y = self.transform:inverseTransformPoint(ps[i], ps[i + 1])
+      local x1, y1 = self.transform:transformPoint(0,0)
+      local x, y = self.transform:inverseTransformPoint(ps[i] + x1, ps[i + 1] + y1)
       if self.poly:isInside(x, y) then
         contains[label] = contains[label] + 1
       end
@@ -27,6 +28,7 @@ function CollageSource:intersectPolyPoints()
 
     contains[label] = contains[label] * 2 / #ps
   end
+  return contains
 end
 
 
