@@ -38,7 +38,7 @@ PopUp.update = function(self, mx, my, dt)
         if self.UI.close.drawUpdate then
             self.UI.drawUpdate = true
         end
-    else
+    elseif self.Btt.inScreen then
         self.UI.close.isHovered = false
         self.Btt:update(mx, my, dt)
     end
