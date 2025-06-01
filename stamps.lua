@@ -71,11 +71,11 @@ Stamps.update = function(self, mx, my, dt)
   if self.Stamp.inScreen and (self.Stamp.image.type or "") == "animation" then self.Stamp.image:update(dt) end
 end
 
-Stamps.draw = function(self, inCanvas, xCanvas, yCanvas)
+Stamps.drawStamps = function(self, inCanvas, xCanvas, yCanvas, Canvas)
   if self.inScreen and (self.Stamp.image.type or "") == "animation" then self.drawStamp = true end
   if self.Button.drawUpdate then self.drawUpdate = true end
   if self.drawStamp and (self.Stamp.coords.x ~= -1 and self.Stamp.coords.y ~= -1) then
-      if inCanvas then self.drawStamp = false end
+      -- if inCanvas then self.drawStamp = false end
       local iw, ih = 0, 0
       if (self.Stamp.image.type or "") == "animation" then 
         _, _, iw, ih = self.Stamp.image.quads[1]:getViewport()
@@ -84,22 +84,29 @@ Stamps.draw = function(self, inCanvas, xCanvas, yCanvas)
       end
       local sx, sy = 0.9*self.Stamp.size.width/iw, 0.9*self.Stamp.size.height/ih
       local x, y = xCanvas or 0, yCanvas or 0
-      if not inCanvas then x, y = self.Stamp.coords.x - self.Stamp.size.width/2, self.Stamp.coords.y - self.Stamp.size.height/2 end
+      if inCanvas then x, y = self.Stamp.coords.x - self.Stamp.size.width/2, self.Stamp.coords.y - self.Stamp.size.height/2 end
+      -- love.graphics.setColor(1,1,1,1)
+      love.graphics.setCanvas(Canvas)
       if (self.Stamp.image.type or "") == "animation" then 
-        self.Stamp.image:draw(x, y, 0, sx, sy)
+        self.Stamp.image:draw(x - xCanvas, y - yCanvas, 0, sx, sy)
         self.Stamp.drawStamp = true
       else
-        love.graphics.draw(self.Stamp.image, x, y, 0, sx, sy)
+        love.graphics.draw(self.Stamp.image, x - xCanvas, y - yCanvas, 0, sx, sy)
       end
-    end
+      love.graphics.setCanvas()
+  end
+  
+  
+end
+
+Stamps.drawButtons = function(self)
   if self.drawUpdate then
     
     if self.following then self.Button.isHovered = false end
-    self.Button:draw(inCanvas, xCanvas, yCanvas)
+    self.Button:draw()--inCanvas, xCanvas, yCanvas)
     if self.following then self.Button.isHovered = true end
-    if inCavas then self.drawUpdate = false end
+    -- if inCavas then self.drawUpdate = false end
   end
-  
 end
 
 Stamps.mousepressed = function(self)
