@@ -32,6 +32,20 @@ GS.load = function()
   )
 
 
+  local RuleBookPages = Animation:new(love.graphics.newImage("assets/animations/manual_spritesheet.png"),
+  GS.spriteInfo["manual_spritesheet.png"].width, GS.spriteInfo["manual_spritesheet.png"].height,
+  GS.spriteInfo["manual_spritesheet.png"].duration, "linear")
+
+  local RuleBookAcc = Animation:new(love.graphics.newImage("assets/animations/rulebook_spritesheet.png"),
+  GS.spriteInfo["rulebook_spritesheet.png"].width, GS.spriteInfo["rulebook_spritesheet.png"].height,
+  GS.spriteInfo["rulebook_spritesheet.png"].duration, "linear")
+
+  local RuleBookNext = love.graphics.newImage("assets/Empty.png")
+
+  local RuleBookClose = love.graphics.newImage("assets/x_close.png")
+
+  GS.RB.createEntities({RuleBookPages}, RuleBookNext, RuleBookNext, RuleBookClose, RuleBookAcc)
+
 
   GS.backImage = Animation:new(love.graphics.newImage("assets/animations/game_bg_spritesheet.png"), 
     GS.spriteInfo["game_bg_spritesheet.png"].width, GS.spriteInfo["game_bg_spritesheet.png"].height, 
@@ -54,22 +68,31 @@ GS.update = function(dt)
   local mx, my = love.mouse.getPosition()
   
   GS.backImage:update(dt)
+  
   GS.resBtt:update(dt)
-  GS.Drawer:update(mx, my, dt)
+  if not GS.RB.drawUI then
+    GS.Drawer:update(mx, my, dt)
+  end
+  GS.RB:update(mx, my, dt)
 end
 
 GS.draw = function()
   -- print(GS.spriteInfo["game_bg_spritessheet.jpg"].scale)
   GS.backImage:draw(0,0,0,GS.spriteInfo["game_bg_spritesheet.png"].scale, GS.spriteInfo["game_bg_spritesheet.png"].scale)
-
-  GS.Drawer:draw()
-
   GS.resBtt:draw(GS.spriteInfo["reset_button_spritesheet.png"].x,GS.spriteInfo["reset_button_spritesheet.png"].y,
   0,GS.spriteInfo["reset_button_spritesheet.png"].scale,GS.spriteInfo["reset_button_spritesheet.png"].scale)
+
+
+  GS.Drawer:draw()
+  GS.RB:draw()
+  
 end
 
 GS.mousepressed = function()
-  GS.Drawer:mousepressed()
+  if not GS.RB.drawUI then
+    GS.Drawer:mousepressed()
+  end
+  GS.RB:mousepressed()
 end
 
 return GS
