@@ -44,6 +44,8 @@ end
 
 
 local function drawDashedLine(xa, ya, xb, yb)
+  love.graphics.setLineWidth(2)
+
   local dx = xb - xa
   local dy = yb - ya
 
@@ -197,9 +199,14 @@ function CollageSource:getSlice()
   )
 
   -- reset poly selection
-  self.poly = Poly:new()
+  self.poly = Poly.new()
 
   return slice
+end
+
+
+function CollageSource:cancelSelection()
+  self.poly = Poly.new()
 end
 
 
