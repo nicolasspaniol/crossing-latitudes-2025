@@ -1,5 +1,4 @@
 local json = require "json/json"
-local MoveSource = require "move_source"
 local CollageSource = require "collage_source"
 local Document = require "document"
 
@@ -19,17 +18,17 @@ function love.load()
   local points = json.decode(f:read("*a"))
   f:close()
   
-  doc = Document.new(800, 200, 200, 100, love.graphics.newImage("data/impres.png"))
+  doc = Document.new(800, 200, 300, 200, love.graphics.newImage("assets/passport_template.jpg"))
   colSrc = CollageSource.new(love.graphics.newImage("imagem.png"), points)
-  colSrc:setTransform(love.math.newTransform(10, 10, 0, .1, .1))
+  colSrc:setTransform(love.math.newTransform(10, 10, 0, .2, .2))
   collages = {}
-  currentCollage = 0
+  currentCollage = nil
 end
 
 
 function love.update(dt)
   local mx, my = love.mouse.getPosition()
-  doc.update(mx, my, dt)
+  doc:update(mx, my, dt)
 end
 
 
@@ -45,27 +44,40 @@ end
 
 
 function love.mousepressed(x, y, key)
-  local onCol = false
-  doc:mousepressed(x, y, key, collages, currentCollage)
-  if #collages > 0 then
-    if collages[currentCollage] and collages[currentCollage].pressed then
-      collages[currentCollage]:mousepressed(x, y, key)
-      currentCollage = 0
+  if key ~= 1 then return end
+
+  if currentCollage then
+    if doc:isHovering(x, y) then
+      currentCollage.rel:translate(x - doc.button.coords.x, y - doc.button.coords.y)
+      currentCollage.fixed = true
+      table.insert(doc.collages, currentCollage)
+      currentCollage = nil
+      doc:mousepressed(x, y, key, collages, currentCollage)
+      doc:draw()
+      doc:mousepressed(x, y, key, collages, currentCollage)
     else
-      for i, collage in ipairs(collages) do
+      currentCollage:mousepressed(x, y, key)
+      currentCollage = nil
+    end
+  else
+    for _, collage in ipairs(collages) do
+      if not collage.fixed then
         collage:mousepressed(x, y, key)
+
         if collage.pressed then
-          currentCollage = i
-          onCol = true
-          break
+          currentCollage = collage
         end
       end
     end
-  end
-  if not onCol then
-    colSrc:mousepressed(x, y, key)
-    local maybeSliceCnv = colSrc:getSlice()
-    collages[#collages+1] = maybeSliceCnv
+
+    if not currentCollage and not doc:isHovering(x, y) then
+      colSrc:mousepressed(x, y, key)
+    end
+
+    local maybeSlice = colSrc:getSlice()
+    collages[#collages+1] = maybeSlice
+
+    doc:mousepressed(x, y, key, collages, currentCollage)
   end
 end
 
