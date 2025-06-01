@@ -30,7 +30,9 @@ function MoveSource:draw()
   if not self.fixed then
     local x, y = love.mouse.getPosition()
     if self.pressed then
-      self.moved:setTransformation(x, y)
+      local x1, y1 = self.tfm:transformPoint(0,0)
+      print(x1,y1)
+      self.moved:setTransformation(x - x1, y - y1)
     end
   end
 

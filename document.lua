@@ -22,7 +22,8 @@ function Document.new(x, y, width, height, image, dType)
     button = Buttons:new(image, x, y, width, height, bttFunction),
     dx = 0,
     dy = 0,
-    bttFunction = bttFunction
+    bttFunction = bttFunction,
+    -- Canva = love.graphics.newCanvas(width, height)
   }
 
   o.button.draw = function(self, inCanvas, xCanvas, yCanvas)
@@ -60,6 +61,7 @@ function Document:draw()
     self.button.coords.y = ym - self.dy
   end
   self.button:draw(true, self.button.coords.x, self.button.coords.y)
+  -- love.graphics.draw(self.image, x, y , 0, sM*self.size.width/iw, sM*self.size.height/ih)
   if #self.collages > 0 then
     for _, collage in ipairs(self.collages) do
       if self.isMoving then

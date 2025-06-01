@@ -187,22 +187,22 @@ RB.drawRulesBook = function(self)
   local csx, csy = self.Book.close.size.width/pages[3]:getWidth(), self.Book.close.size.height/pages[3]:getHeight()
   if self.nextHovered then
     -- love.graphics.rectangle("fill", self.Book.next.coords.x, self.Book.next.coords.y, self.Book.next.size.width, self.Book.next.size.height )
-    love.graphics.setColor(1,1,1,1)--0.5)
+    -- love.graphics.setColor(1,1,1,0)--0.5)
     
-    love.graphics.draw(pages[2], self.Book.next.coords.x, self.Book.next.coords.y, 0, nsx, nsy)
+    -- love.graphics.draw(pages[2], self.Book.next.coords.x, self.Book.next.coords.y, 0, nsx, nsy)
   else
     -- love.graphics.rectangle("line", self.Book.next.coords.x, self.Book.next.coords.y, self.Book.next.size.width, self.Book.next.size.height )
-    love.graphics.setColor(1,1,1,1)
-    love.graphics.draw(pages[2],self.Book.next.coords.x + self.Book.next.size.width*0.05, self.Book.next.coords.y + self.Book.next.size.height*0.05, 0, 0.9*nsx, 0.9*nsy)
+    -- love.graphics.setColor(1,1,1,0)
+    -- love.graphics.draw(pages[2],self.Book.next.coords.x + self.Book.next.size.width*0.05, self.Book.next.coords.y + self.Book.next.size.height*0.05, 0, 0.9*nsx, 0.9*nsy)
   end
   if self.prevHovered then
     -- love.graphics.rectangle("fill", self.Book.prev.coords.x, self.Book.prev.coords.y, self.Book.prev.size.width, self.Book.prev.size.height )
-    love.graphics.setColor(1,1,1,1)--0.5)
-    love.graphics.draw(pages[1], self.Book.prev.coords.x, self.Book.prev.coords.y, 0, psx, psy)
+    -- love.graphics.setColor(1,1,1,0)--0.5)
+    -- love.graphics.draw(pages[1], self.Book.prev.coords.x, self.Book.prev.coords.y, 0, psx, psy)
   else
     -- love.graphics.rectangle("line", self.Book.prev.coords.x, self.Book.prev.coords.y, self.Book.prev.size.width, self.Book.prev.size.height )
-    love.graphics.setColor(1,1,1,1)
-    love.graphics.draw(pages[1], self.Book.prev.coords.x + self.Book.prev.size.width*0.05, self.Book.prev.coords.y + self.Book.prev.size.height*0.05, 0, 0.9*psx, 0.9*psy)
+    -- love.graphics.setColor(1,1,1,0)
+    -- love.graphics.draw(pages[1], self.Book.prev.coords.x + self.Book.prev.size.width*0.05, self.Book.prev.coords.y + self.Book.prev.size.height*0.05, 0, 0.9*psx, 0.9*psy)
   end
   if self.closeHovered then
     -- love.graphics.rectangle("fill", self.Book.close.coords.x, self.Book.close.coords.y, self.Book.close.size.width, self.Book.close.size.height )
