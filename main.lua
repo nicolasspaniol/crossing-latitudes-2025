@@ -1,6 +1,7 @@
 local json = require "json/json"
 local GS = require "gamescreen"
 local CollageSource = require "collage_source"
+local Document = require "document"
 
 --- @type CollageSource
 local colSrc = nil
@@ -23,9 +24,15 @@ end
 
 
 function love.draw()
-  colSrc:draw()
   GS.draw()
-end
+  colSrc:draw()
+  doc:draw()
+    if #collages > 0 then
+      for _, collage in ipairs(collages) do
+        collage:draw()
+      end
+    end
+ end
 
 
 function love.mousepressed(x, y, key)
