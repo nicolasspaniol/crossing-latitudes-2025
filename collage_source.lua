@@ -1,9 +1,33 @@
 local inspect = require "inspect/inspect"
+local MoveSource = require "move_source"
+local Poly = require "poly"
+
+
+DISTANCE_TO_CLOSE = 20
+DASH_INCREMENT = .1
 
 
 --- @class CollageSource
 local CollageSource = {}
 CollageSource.__index = CollageSource
+
+
+--- @param poly Poly
+function CollageSource:intersectPolyPoints()
+  local contains = {}
+  for label, ps in pairs(self.points) do
+    contains[label] = 0
+
+    for i = 1, #ps, 2 do
+      local x, y = self.transform:inverseTransformPoint(ps[i], ps[i + 1])
+      if self.poly:isInside(x, y) then
+        contains[label] = contains[label] + 1
+      end
+    end
+
+    contains[label] = contains[label] * 2 / #ps
+  end
+end
 
 
 local function dist(xa, ya, xb, yb)
@@ -14,15 +38,53 @@ local function dist(xa, ya, xb, yb)
 end
 
 
+local function insideRect(x, y, xa, ya, xb, yb)
+  return x <= xb and x >= xa and y <= yb and y >= ya
+end
+
+
+local function drawDashedLine(xa, ya, xb, yb)
+  love.graphics.setLineWidth(2)
+
+  local dx = xb - xa
+  local dy = yb - ya
+
+  local fill = false
+  local x, y = xa, ya
+  local lx, ly = xa, ya
+  local n = dist(xa, ya, xb, yb) / 100
+  local i = (2 * love.timer.getTime() % 1) * 2 * DASH_INCREMENT / n
+
+  while i < 1 do
+    fill = not fill
+
+    x = xa + dx * i
+    y = ya + dy * i
+
+    if fill then
+      love.graphics.line(lx, ly, x, y)
+    end
+
+    lx, ly = x, y
+
+    i = i + DASH_INCREMENT / n
+  end
+
+  if fill then
+    love.graphics.line(lx, ly, xb, yb)
+  end
+end
+
+
 --- @param img love.Image
-function CollageSource.new(img)
+function CollageSource.new(img, points)
   local w, h = img:getDimensions()
 
   local o = {
+    points = points,
     cnv = love.graphics.newCanvas(w, h),
     transform = love.math.newTransform(),
-    coords = {},
-    closed = false
+    poly = Poly.new(),
   }
 
   o.cnv:renderTo(function()
@@ -39,29 +101,37 @@ end
 
 function CollageSource:draw()
   love.graphics.setColor(1,1,1)
-
+  local blendMode = {love.graphics.getBlendMode()}
+  love.graphics.setBlendMode("alpha", "premultiplied")
   love.graphics.draw(self.cnv, self.transform)
+  love.graphics.setBlendMode(unpack(blendMode))
+
+  self:drawLines()
 end
 
 
-function CollageSource:debugPoints()
-  if #self.coords == 0 then return end
+function CollageSource:drawLines()
+  if self.poly:len() == 0 then return end
 
-  love.graphics.setColor(1,1,1)
+  love.graphics.setColor(1, 1, 1)
 
   local mx, my = love.mouse.getPosition()
-  local lx, ly = self.transform:transformPoint(unpack(self.coords[1]))
+  local lx, ly = self.transform:transformPoint(unpack(self.poly[1]))
 
-  for _, c in ipairs(self.coords) do
+  for i = 1, self.poly:len() do
+    local c = self.poly[i]
     local x, y = self.transform:transformPoint(unpack(c))
-    love.graphics.line(lx, ly, x, y)
+    drawDashedLine(lx, ly, x, y)
     lx, ly = x, y
   end
 
-  if self.closed then
-    love.graphics.line(lx, ly, unpack(self.coords[1]))
+  -- transform everything to screen coords
+  local fx, fy = self.transform:transformPoint(unpack(self.poly[1]))
+
+  if dist(fx, fy, mx, my) < DISTANCE_TO_CLOSE then
+    drawDashedLine(lx, ly, fx, fy)
   else
-    love.graphics.line(lx, ly, mx, my)
+    drawDashedLine(lx, ly, mx, my)
   end
 end
 
@@ -73,77 +143,70 @@ end
 
 
 function CollageSource:mousepressed(x, y, button)
-  if self.closed then return end
+  if self.poly.closed then return end
 
-  local transform = self.transform:inverse()
-  x, y = transform:transformPoint(x, y)
+  local mx, my = self.transform:inverseTransformPoint(x, y)
+  local isInside = insideRect(mx, my, 0, 0, self.cnv:getDimensions())
 
-  if button == 1 then
-    for _, c in ipairs(self.coords) do
-      if dist(x, y, unpack(c)) < 200 and #self.coords > 2 then
-        self.closed = true
-        return
-      end
+  if not button == 1 then return end
+
+  if self.poly:len() > 0 then
+    local cx, cy = self.transform:transformPoint(unpack(self.poly[1]))
+    if dist(x, y, cx, cy) < DISTANCE_TO_CLOSE and self.poly:len() > 2 then
+      self.poly.closed = true
+      return
     end
-
-    table.insert(self.coords, {x, y})
   end
-end
 
-
-function CollageSource:mousemoved(x, y)
-  if not self.closed then return end
+  if isInside then
+    self.poly:add(self.transform:inverseTransformPoint(x, y))
+  end
 end
 
 
 --- @return love.Canvas | nil
 function CollageSource:getSlice()
-  if not self.closed then return nil end
-
-  local poly = {}
-  for _, c in ipairs(self.coords) do
-    table.insert(poly, c[1])
-    table.insert(poly, c[2])
-  end
-
-  local tris = love.math.triangulate(poly)
+  if not self.poly.closed then return nil end
 
   local w, h = self.cnv:getDimensions()
-  local cnv = love.graphics.newCanvas(w, h)
+  local sliceCnv = love.graphics.newCanvas(w, h)
 
-  cnv:renderTo(function()
-    local bMode = love.graphics.getBlendMode()
-    local col = {love.graphics.getColor()}
+  sliceCnv:renderTo(function()
+    -- love.graphics.setBlendMode("add", "premultiplied")
 
-    love.graphics.clear(0,0,0)
+    love.graphics.clear(0,0,0,0)
 
-    love.graphics.setColor(1,1,1)
+    love.graphics.setColor(1,1,1,1)
 
-    for _, tri in ipairs(tris) do
-      love.graphics.polygon("fill", tri)
-    end
+    self.poly:draw("fill")
 
     love.graphics.setBlendMode("multiply", "premultiplied")
 
     love.graphics.draw(self.cnv)
-
-    love.graphics.setColor(col)
-    love.graphics.setBlendMode(bMode)
   end)
 
   self.cnv:renderTo(function()
-    love.graphics.setColor(0,0,0)
-
-    for _, tri in ipairs(tris) do
-      love.graphics.polygon("fill", tri)
-    end
+    love.graphics.setBlendMode("replace", "premultiplied")
+    love.graphics.setColor(0,0,0,0)
+    self.poly:draw("fill")
   end)
 
-  -- reset poly selection
-  self.closed = false
-  self.coords = {}
+  local slice = MoveSource.new(
+    sliceCnv,
+    self.transform,
+    self.poly,
+    self:intersectPolyPoints()
+  )
 
-  return nil
+  -- reset poly selection
+  self.poly = Poly.new()
+
+  return slice
+end
+
+
+function CollageSource:cancelSelection()
+  self.poly = Poly.new()
 end
 
 
