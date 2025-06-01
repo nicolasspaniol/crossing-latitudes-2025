@@ -1,4 +1,5 @@
 local inspect = require "inspect/inspect"
+local MoveSource = require "move_source"
 
 DISTANCE_TO_CLOSE = 20
 DASH_INCREMENT = .1
@@ -105,14 +106,16 @@ end
 
 function CollageSource:draw()
   love.graphics.setColor(1,1,1)
-
+  local blendMode = {love.graphics.getBlendMode()}
+  love.graphics.setBlendMode("alpha", "premultiplied")
   love.graphics.draw(self.cnv, self.transform)
+  love.graphics.setBlendMode(unpack(blendMode))
 
-  self:drawPoints()
+  self:drawLine()
 end
 
 
-function CollageSource:drawPoints()
+function CollageSource:drawLine()
   if #self.coords == 0 then return end
 
   love.graphics.setColor(1, 1, 1)
@@ -178,32 +181,28 @@ function CollageSource:getSlice()
   local tris = love.math.triangulate(poly)
 
   local w, h = self.cnv:getDimensions()
-  local cnv = love.graphics.newCanvas(w, h)
+  local sliceCnv = love.graphics.newCanvas(w, h)
 
-  cnv:renderTo(function()
-    local bMode = love.graphics.getBlendMode()
-    local col = {love.graphics.getColor()}
+  sliceCnv:renderTo(function()
+    -- love.graphics.setBlendMode("add", "premultiplied")
 
-    love.graphics.clear(0,0,0)
+    love.graphics.clear(0,0,0,0)
 
-    love.graphics.setColor(1,1,1)
+    love.graphics.setColor(1,1,1,1)
 
     for _, tri in ipairs(tris) do
       love.graphics.polygon("fill", tri)
     end
 
-    love.graphics.setBlendMode("replace", "alphamultiply")
+    love.graphics.setBlendMode("multiply", "premultiplied")
 
     love.graphics.draw(self.cnv)
-
-    love.graphics.setColor(col)
-    love.graphics.setBlendMode(bMode)
   end)
 
   self.cnv:renderTo(function()
-    love.graphics.setColor(0,0,0)
-
     for _, tri in ipairs(tris) do
+      love.graphics.setBlendMode("replace", "premultiplied")
+      love.graphics.setColor(0,0,0,0)
       love.graphics.polygon("fill", tri)
     end
   end)
@@ -214,7 +213,7 @@ function CollageSource:getSlice()
   self.closed = false
   self.coords = {}
 
-  return nil
+  return MoveSource.new(sliceCnv, self.transform)
 end
 
 
