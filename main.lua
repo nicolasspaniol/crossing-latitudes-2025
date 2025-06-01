@@ -49,6 +49,7 @@ end
 
 
 function love.mousepressed(x, y, key)
+  GS.mousepressed()
   if key ~= 1 then return end
 
   if currentCollage then
@@ -94,5 +95,5 @@ function love.keypressed(key)
   if key == 'escape' then
     colSrc:cancelSelection()
   end
-  GS.mousepressed()
+  
 end
