@@ -39,6 +39,14 @@
         "scale": 0.6666666667,
         "duration": 1
 	},
+	"manual_spritesheet.png":{
+		"width": 1920,
+        "height": 1080,
+        "x": 0,
+        "y": 0,
+        "scale": 0.6666666667,
+        "duration": 1
+	},
 	"stamps_spritesheet.png":{
 		"width": 600,
         "height": 300,
