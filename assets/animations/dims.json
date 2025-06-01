@@ -2,32 +2,32 @@
     "rulebook_spritesheet.png":{
         "width": 1250,
         "height": 938,
-        "x": 1160,
-        "y": 640,
-        "scale": 0.16,
+        "x": 1055.8333333125,
+        "y": 561.8333333177,
+        "scale": 0.1666666667,
         "duration": 2
     },
     "send_button_spritesheet.png":{
         "width": 300,
         "height": 150,
-        "x": 1160,
-        "y": 60,
+        "x": 1060,
+        "y": 10,
         "scale": 0.6666666667,
         "duration": 5
     },
 	"settings_button_spritesheet.png":{
 		"width": 100,
         "height": 100,
-        "x": 34,
-        "y": 34,
+        "x": 0.6666666667,
+        "y": 0.6666666667,
         "scale": 0.6666666667,
         "duration": 15
 	},
 	"reset_button_spritesheet.png":{
 		"width": 320,
         "height": 120,
-        "x": 120,
-        "y": 660,
+        "x": 13.3333333333,
+        "y": 620,
         "scale": 0.6666666667,
         "duration": 5
 	},
@@ -42,8 +42,8 @@
 	"stamps_spritesheet.png":{
 		"width": 600,
         "height": 300,
-        "x": 80,
-        "y": 200,
+        "x": -120,
+        "y": 100,
         "scale": 0.6666666667,
         "duration": 5
 	}
