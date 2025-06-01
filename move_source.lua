@@ -1,3 +1,6 @@
+local inspect = require "inspect/inspect"
+
+
 --- @class MoveSource
 local MoveSource = {}
 MoveSource.__index = MoveSource
@@ -5,16 +8,15 @@ MoveSource.__index = MoveSource
 
 --- @param cnv love.Canvas
 --- @param transform love.Transform
-function MoveSource.new(cnv, transform)
+function MoveSource.new(cnv, transform, poly, labels)
   local t = {
     cnv = cnv,
     tfm = transform:clone(),
-    winw = love.graphics.getWidth(),
-    winh = love.graphics.getHeight(),
+    moved = love.math.newTransform(),
+    rel = love.math.newTransform(),
+    poly = poly,
+    labels = labels,
     pressed = false,
-    dx = 0,
-    dy = 0,
-    offset = 5
   }
   setmetatable(t, MoveSource)
   return t
@@ -22,39 +24,43 @@ end
 
 
 function MoveSource:draw()
-  love.graphics.setBlendMode("alpha", "premultiplied")
-  love.graphics.setColor(1,1,1,1)
-  love.graphics.draw(self.cnv, self.tfm)
-end
+  love.graphics.replaceTransform(love.math.newTransform())
 
-
-function MoveSource:mousemoved()
   local x, y = love.mouse.getPosition()
   if self.pressed then
-    local xs = math.min(math.max(x-self.dx, 0), self.winw-self.dx)
-    local ys = math.min(math.max(y-self.dy, 0), self.winh-self.dy)
-    local xo, yo = self.tfm:transformPoint(0,0)
-    self.tfm = self.tfm:translate(xs-xo, ys-yo)
-    if (x < 1 or x > self.winw-2) or (y < 1 or y > self.winh-2) then
-      self.pressed = false
-    end
+    self.moved:setTransformation(x, y)
   end
+
+  love.graphics.setBlendMode("alpha", "premultiplied")
+  love.graphics.setColor(1,1,1,1)
+  love.graphics.draw(self.cnv, self.rel * self.moved * self.tfm)
+
+  love.graphics.replaceTransform(self.rel * self.moved * self.tfm)
+  love.graphics.setLineWidth(3)
+  local lc = self.poly[1]
+
+  for i = 2, self.poly:len() do
+    local c = self.poly[i]
+    love.graphics.setColor(1,1,1,1)
+    love.graphics.line(lc[1], lc[2], c[1], c[2])
+    lc = c
+  end
+  love.graphics.line(lc[1], lc[2], unpack(self.poly[1]))
 end
 
 
 function MoveSource:mousepressed(x, y, key)
   if key == 1 then
-    if self.pressed then
-      local xo, yo = self.tfm:transformPoint(0,0)
-      self.tfm = self.tfm:translate(x-xo-self.dx, y-yo-self.dy)
-      self.pressed = false
+    local ix, iy = self.tfm:inverseTransformPoint(x, y)
+    local ox, oy = self.tfm:transformPoint(0, 0)
+
+    if not self.pressed and self.poly:isInside(ix, iy) then
+      self.pressed = true
+      self.rel:setTransformation(ox - x, oy - y)
     else
-      local xls, yls = self.tfm:transformPoint(0,0)
-      if (x > xls-self.offset and x < xls+self.cnv:getWidth()+self.offset) and (y > yls-self.offset and y < yls+self.cnv:getHeight()+self.offset) then
-        self.dx = x - xls
-        self.dy = y - yls
-        self.pressed = true
-      end
+      self.pressed = false
+      self.moved:setTransformation(0, 0)
+      self.rel:setTransformation(0, 0)
     end
   end
 end
