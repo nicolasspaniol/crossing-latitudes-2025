@@ -1,74 +1,74 @@
 {
     "rulebook_spritesheet.png":{
-        "width": 1250,
-        "height": 938,
+        "width": 208,
+        "height": 156,
         "x": 1055.8333333125,
         "y": 561.8333333177,
-        "scale": 0.1666666667,
+        "scale": 1.0,
         "duration": 2
     },
     "send_button_spritesheet.png":{
-        "width": 300,
-        "height": 150,
+        "width": 200,
+        "height": 100,
         "x": 1060,
         "y": 10,
-        "scale": 0.6666666667,
-        "duration": 5
+        "scale": 1.0,
+        "duration": 3
     },
 	"settings_button_spritesheet.png":{
-		"width": 100,
-        "height": 100,
+		"width": 66,
+        "height": 66,
         "x": 0.6666666667,
         "y": 0.6666666667,
-        "scale": 0.6666666667,
-        "duration": 15
+        "scale": 1.0,
+        "duration": 5
 	},
 	"reset_button_spritesheet.png":{
-		"width": 320,
-        "height": 120,
+		"width": 213,
+        "height": 80,
         "x": 13.3333333333,
         "y": 620,
-        "scale": 0.6666666667,
+        "scale": 1.0,
         "duration": 5
 	},
 	"game_bg_spritesheet.png":{
-		"width": 1920,
-        "height": 1080,
+		"width": 1280,
+        "height": 720,
         "x": 0,
         "y": 0,
-        "scale": 0.6666666667,
+        "scale": 1.0,
         "duration": 1
 	},
 	"manual_spritesheet.png":{
-		"width": 1920,
-        "height": 1080,
+		"width": 1280,
+        "height": 720,
         "x": 0,
         "y": 0,
-        "scale": 0.6666666667,
+        "scale": 1.0,
         "duration": 1
 	},
 	"main_menu_spritesheet.png":{
-		"width": 1920,
-        "height": 1080,
+		"width": 1280,
+        "height": 720,
         "x": 0,
         "y": 0,
-        "scale": 0.6666666667,
+        "scale": 1.0,
         "duration": 1
 	},
 	"stamps_spritesheet.png":{
-		"width": 600,
-        "height": 300,
+		"width": 400,
+        "height": 200,
         "x": -120,
         "y": 100,
-        "scale": 0.6666666667,
+        "scale": 1.0,
         "duration": 2
 	},
 	"stamps_closed_spritesheet.png":{
-		"width": 150,
-        "height": 300,
+		"width": 100,
+        "height": 200,
         "x": -7.8,
         "y": 100,
-        "scale": 0.6666666667,
+        "scale": 1.0,
         "duration": 2
 	}
 }
