@@ -56,9 +56,9 @@
         "duration": 2
 	},
 	"stamps_closed_spritesheet.png":{
-		"width": 600,
+		"width": 150,
         "height": 300,
-        "x": -120,
+        "x": -7.8,
         "y": 100,
         "scale": 0.6666666667,
         "duration": 2
