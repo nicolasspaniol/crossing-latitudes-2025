@@ -14,12 +14,13 @@ Stamps.new = function(self, x, y, width, height, bx, by, bw, bh, sw, sh, image, 
     local bx1, bx2 = object.Drawer.coords.x, object.Drawer.coords.x + object.Drawer.size.width
     local by1, by2 = object.Drawer.coords.y, object.Drawer.coords.y + object.Drawer.size.height
     
-    if mx > bx1 and mx < bx2 and my > by1 and my < by2 then
+    if mx > bx1 and mx < bx2*0.5 and my > by1 and my < by2*0.75 then
       object.following = not object.following
     else
       object.Stamp.inScreen = true
       object.drawStamp = true
       object.Stamp.coords = { x = mx, y = my }
+      object.Stamp.active = true
     end
     
     self.drawUpdate = true
@@ -28,6 +29,7 @@ Stamps.new = function(self, x, y, width, height, bx, by, bw, bh, sw, sh, image, 
 
   
   object.Stamp = {}
+  object.Stamp.active = false
   object.Stamp.inScreen = false
   object.Stamp.size = { width = sw, height = sh }
   object.Stamp.image = stampImage
@@ -84,14 +86,14 @@ Stamps.drawStamps = function(self, inCanvas, xCanvas, yCanvas, Canvas)
       end
       local sx, sy = 0.9*self.Stamp.size.width/iw, 0.9*self.Stamp.size.height/ih
       local x, y = xCanvas or 0, yCanvas or 0
-      if inCanvas then x, y = self.Stamp.coords.x - self.Stamp.size.width/2, self.Stamp.coords.y - self.Stamp.size.height/2 end
+      if true then x, y = self.Stamp.coords.x - self.Stamp.size.width/2, self.Stamp.coords.y - self.Stamp.size.height/2 end
       -- love.graphics.setColor(1,1,1,1)
-      love.graphics.setCanvas(Canvas)
+      if Canvas then love.graphics.setCanvas(Canvas) end
       if (self.Stamp.image.type or "") == "animation" then 
         self.Stamp.image:draw(x - xCanvas, y - yCanvas, 0, sx, sy)
         self.Stamp.drawStamp = true
       else
-        love.graphics.draw(self.Stamp.image, x - xCanvas, y - yCanvas, 0, sx, sy)
+        love.graphics.draw(self.Stamp.image, x - (xCanvas or 0), y - (yCanvas or 0), 0, sx, sy)
       end
       love.graphics.setCanvas()
   end

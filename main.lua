@@ -1,4 +1,5 @@
 local json = require "json/json"
+local GS = require "gamescreen"
 local CollageSource = require "collage_source"
 local Document = require "document"
 
@@ -23,16 +24,20 @@ function love.load()
   colSrc:setTransform(love.math.newTransform(10, 10, 0, .2, .2))
   collages = {}
   currentCollage = nil
+
+  GS.load()
 end
 
 
 function love.update(dt)
   local mx, my = love.mouse.getPosition()
   doc:update(mx, my, dt)
+  GS.update(dt)
 end
 
 
 function love.draw()
+  GS.draw()
   colSrc:draw()
   doc:draw()
   if #collages > 0 then
@@ -89,4 +94,5 @@ function love.keypressed(key)
   if key == 'escape' then
     colSrc:cancelSelection()
   end
+  GS.mousepressed()
 end

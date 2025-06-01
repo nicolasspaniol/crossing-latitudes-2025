@@ -21,8 +21,8 @@ PopUp.new = function(self, ux, uy, uw, uh, bx, by, bw, bh, closeImage, bttImage,
     object.UI.image = UIImage
     
     object.Btt = Buttons:new(bttImage, bx, by, bw, bh, bttFunction)
-    local cx, cy = object.UI.coords.x + object.UI.size.width*0.8, object.UI.coords.y
-    local cw, ch = object.UI.size.width*0.2, object.UI.size.width*0.2
+    local cx, cy = object.UI.coords.x + object.UI.size.width*0.85, object.UI.coords.y
+    local cw, ch = object.UI.size.width*0.15, object.UI.size.width*0.15
     object.UI.close = Buttons:new(closeImage, cx, cy, cw, ch, bttFunction)
     object.Btt.canvas = love.graphics.newCanvas(bw, bh)
     object.Btt.inScreen = true
@@ -45,7 +45,8 @@ PopUp.update = function(self, mx, my, dt)
 end
 
 
-PopUp.updateUI = function(self, mx, my, dt) 
+PopUp.updateUI = function(self, mx, my, dt)
+    if self.UI.image.type == "animation" then self.UI.image:update(dt) end
 end
 
 PopUp.changeUIState = function(self, open)
@@ -63,7 +64,7 @@ PopUp.changeUIState = function(self, open)
 end
 
 PopUp.drawUIClose = function(self)
-    if self.UI.close.drawUpdate then
+    if self.UI.drawUpdate then
         self.UI.close:draw(true, self.UI.close.coords.x-self.UI.coords.x, self.UI.close.coords.y-self.UI.coords.y)
     end
 end
@@ -71,8 +72,8 @@ end
 PopUp.drawUI = function(self)
 
     
-    love.graphics.setColor(1,1,1,1)
-    love.graphics.rectangle("fill", 0, 0, 5000, 5000)
+    -- love.graphics.setColor(1,1,1,1)
+    -- love.graphics.rectangle("fill", 0, 0, 5000, 5000)
     
 end
 
@@ -86,10 +87,19 @@ PopUp.draw = function(self)
             love.graphics.clear(0,0,0,0)
 
             if self.UI.image then
-                local iw, ih = self.UI.image:getDimensions()
-                local sx, sy = self.UI.size.width/iw, self.UI.size.height/ih
+                local iw, ih = 0
+                local sx, sy = 0
+                if (self.UI.image.type or "") == "animation" then
+                    _, _, iw, ih = self.UI.image.quads[1]:getViewport()
+                    sx, sy = self.UI.size.width/iw, self.UI.size.height/ih
+                    self.UI.image:draw(0, 0, 0, sx, sy)
+                else
+                    iw, ih = self.UI.image:getDimensions()
+                    sx, sy = self.UI.size.width/iw, self.UI.size.height/ih
+                    love.graphics.draw(self.UI.image, 0, sx, sy)
+                end
 
-                love.graphics.draw(self.UI.image, 0, sx, sy)
+                
             end
             self:drawUI()
             self:drawUIClose()
