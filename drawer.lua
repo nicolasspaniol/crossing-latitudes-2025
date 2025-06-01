@@ -28,7 +28,7 @@ Drawer.createEntities = function(bx, by, bw, bh, images, openImage, closeImage, 
   end
   print(pppw, ppph, pppx, pppy)
   -- Drawer.popUp = PopUp:new(pppx, pppy, pppw, ppph , pppx, pppy , buttonSize, buttonSize, closeImage, openImage, UIImage)
-  Drawer.popUp = PopUp:new(bx, by, 0.66*bw, 0.66*bh, bx, by + (bh - buttonSize2)/2, 0.66*buttonSize1, 0.66*buttonSize2, closeImage, openImage, UIImage)
+  Drawer.popUp = PopUp:new(bx, by, 0.66*bw, 0.66*bh, -7.8, 100, 0.66*buttonSize1, 0.66*buttonSize2, closeImage, openImage, UIImage)
   Drawer.inScreen = true
   Drawer.lastActive = 0
 
