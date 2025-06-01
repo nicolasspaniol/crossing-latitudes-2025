@@ -3,10 +3,12 @@ local MoveSource = {}
 MoveSource.__index = MoveSource
 
 
-function MoveSource.new(object)
+--- @param cnv love.Canvas
+--- @param transform love.Transform
+function MoveSource.new(cnv, transform)
   local t = {
-    cnv = object.cnv,
-    tfm = object.transform,
+    cnv = cnv,
+    tfm = transform:clone(),
     winw = love.graphics.getWidth(),
     winh = love.graphics.getHeight(),
     pressed = false,
@@ -20,6 +22,8 @@ end
 
 
 function MoveSource:draw()
+  love.graphics.setBlendMode("alpha", "premultiplied")
+  love.graphics.setColor(1,1,1,1)
   love.graphics.draw(self.cnv, self.tfm)
 end
 
