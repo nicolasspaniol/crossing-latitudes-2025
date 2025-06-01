@@ -46,5 +46,13 @@
         "y": 100,
         "scale": 0.6666666667,
         "duration": 5
+	},
+	"stamps_closed_spritesheet.png":{
+		"width": 600,
+        "height": 300,
+        "x": -120,
+        "y": 100,
+        "scale": 0.6666666667,
+        "duration": 5
 	}
 }
