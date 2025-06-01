@@ -3,7 +3,7 @@
         "width": 1250,
         "height": 938,
         "x": 1160,
-        "y": 597,
+        "y": 640,
         "scale": 0.16,
         "duration": 2
     },
@@ -12,7 +12,7 @@
         "height": 150,
         "x": 1160,
         "y": 60,
-        "scale": 0.75,
+        "scale": 0.6666666667,
         "duration": 5
     },
 	"settings_button_spritesheet.png":{
@@ -20,7 +20,31 @@
         "height": 100,
         "x": 34,
         "y": 34,
-        "scale": 0.75,
+        "scale": 0.6666666667,
         "duration": 15
+	},
+	"reset_button_spritesheet.png":{
+		"width": 320,
+        "height": 120,
+        "x": 120,
+        "y": 660,
+        "scale": 0.6666666667,
+        "duration": 5
+	},
+	"game_bg_spritesheet.png":{
+		"width": 1920,
+        "height": 1080,
+        "x": 0,
+        "y": 0,
+        "scale": 0.6666666667,
+        "duration": 5
+	},
+	"stamps_spritesheet.png":{
+		"width": 600,
+        "height": 300,
+        "x": 80,
+        "y": 200,
+        "scale": 0.6666666667,
+        "duration": 5
 	}
 }
