@@ -23,7 +23,7 @@ function love.load()
   screen = 1
   local function func() screen = screen%2 + 1 end
   MS = ms.new(func)
-  GS.load()
+  GS.load("assets/news/0.jpg", "assets/reqPass0.png", "setPoints.json", "assets/passport_template.jpg")
 end
 
 
@@ -60,7 +60,7 @@ function love.mousepressed(x, y, key)
   
   
   if screen == 2 then
-    GS.mousepressed()
+    GS.mousepressed(x, y, key)
   else
     MS:mousepressed(x, y, key)
   end

@@ -10,24 +10,26 @@ local inspect = require "inspect/inspect"
 GS.spriteInfo = json.decode(love.filesystem.read("assets/animations/dims.json"))
 GS.Drawer = require "drawer"
 GS.RB = require "rulesbook"
-GS.DocImages = {
-  love.graphics.newImage("assets/driver_template.jpg"), 
-  love.graphics.newImage("assets/identity_template.jpg"), 
-  love.graphics.newImage("assets/passport_template.jpg")
-}
+GS.document = {"assets/passport_template.jpg", "assets/driver_template.jpg", "assets/identity_template.jpg"}
+GS.news = {"assets/news/0.jpg", "assets/news/1.jpg", "assets/news/9.jpg"}
+GS.request = {"reqPass0.png", "assets/reqCNH01.png", "assets/reqId09.png"}
+GS.json = {"points1.json", "points2.json", "points3.json"}
+GS.currIDX = 1
+GS.printSomething = nil
+GS.timerPS = 0
 
-
-GS.load = function()
-  local img = love.graphics.newImage("assets/news/0.jpg")
-  local f = io.open("setPoints.json", "r")
+GS.load = function(news, request, cjson, document)
+  local img = love.graphics.newImage(news)
+  local f = io.open(cjson, "r")
   local points = json.decode(f:read("*a"))
   f:close()
   x1, y1 = 300, 50
-  GS.doc = Document.new(800, 200, 300, 200, love.graphics.newImage("assets/passport_template.jpg"))
-  GS.colSrc = CollageSource.new(love.graphics.newImage("assets/news/0.jpg"), points)
+  GS.doc = Document.new(800, 200, 300, 200, love.graphics.newImage(document))
+  GS.colSrc = CollageSource.new(love.graphics.newImage(news), points)
   GS.colSrc:setTransform(love.math.newTransform(x1, y1, 0, .31, .31))
   GS.collages = {}
   GS.currentCollage = nil
+  GS.aRequest = love.graphics.newImage(request)
 
   local closedDrawer =  Animation:new(love.graphics.newImage("assets/animations/stamps_closed_spritesheet.png"), 
   GS.spriteInfo["stamps_closed_spritesheet.png"].width, GS.spriteInfo["stamps_closed_spritesheet.png"].height, 
@@ -83,7 +85,7 @@ GS.load = function()
   -- GS.RB.createEntities( {} GS.spriteInfo["rulebook_spritesheet.png"], )
   local scale = GS.spriteInfo["reset_button_spritesheet.png"].scale
   GS.ResetButton = Buttons:new(resBtt, GS.spriteInfo["reset_button_spritesheet.png"].x,GS.spriteInfo["reset_button_spritesheet.png"].y,
-  GS.spriteInfo["reset_button_spritesheet.png"].width*scale, GS.spriteInfo["reset_button_spritesheet.png"].height*scale, function() GS.load() end)
+  GS.spriteInfo["reset_button_spritesheet.png"].width*scale, GS.spriteInfo["reset_button_spritesheet.png"].height*scale, function() GS.load(news, request, cjson, document) end)
   GS.ResetButton.inScreen = true
 
 
@@ -101,8 +103,14 @@ GS.load = function()
 end
 
 GS.update = function(dt)
+  if GS.timerPS then
+    GS.timerPS = GS.timerPS + dt
+  end
+  if GS.timerPS > 3 then
+    GS.timePS = 0
+  end
   local mx, my = love.mouse.getPosition()
-  -- print(mx, my)
+  print(mx, my)
   GS.doc:update(mx, my, dt)
   GS.ResetButton:update(mx, my, dt)
   GS.SendButton:update(mx, my, dt)
@@ -134,6 +142,19 @@ GS.draw2 = function(inCanvas, xCanvas, yCanvas, Canvas)
   GS.SendButton:draw()
   GS.Drawer:draw(inCanvas, xCanvas, yCanvas, Canvas)
   GS.RB:draw()
+  love.graphics.draw(GS.aRequest, 20, 400, 0, 1.5, 1.5)
+
+  if GS.printSomething == "vitoria" then
+    love.graphics.setFont(love.graphics.newFont(40))
+    love.graphics.printf("YOU'VE DONE IT!!", 0, 0, 100000)
+  elseif GS.printSomething == "derrota" then
+    love.graphics.setFont(love.graphics.newFont(40))
+    love.graphics.printf("TOO BAD. AGAIN...", 0, 0, 100000)
+  else
+    GS.timerPS = 0
+  end
+
+
   
 end
 
@@ -219,12 +240,14 @@ GS.ScanDocument = function()
      points_sum = points_sum / v_number
     print(points_sum)
     if points_sum > 0.6 then
-      love.graphics.setFont(love.graphics.newFont(40))
-      love.graphics.printf("YOU'VE DONE IT!!", 0, 0, 100000)
+      GS.printSomething = "vitoria"
+      GS.currIDX = GS.currIDX + 1
+      if GS.currIDX <= 3 then
+        GS.load(GS.news[GS.currIDX], GS.request[currIDX], GS.json[currIDX], GS.document[currIDX])
+      end
     else
-      love.graphics.setFont(love.graphics.newFont(40))
-      love.graphics.printf("TOO BAD. AGAIN...", 0, 0, 100000)
-      GS.load()
+      GS.printSomething = "derrota"
+      GS.load(GS.news[GS.currIDX], GS.request[currIDX], GS.json[currIDX], GS.document[currIDX])
     end
 
 
