@@ -14,7 +14,7 @@ Stamps.new = function(self, x, y, width, height, bx, by, bw, bh, sw, sh, image, 
     local bx1, bx2 = object.Drawer.coords.x, object.Drawer.coords.x + object.Drawer.size.width
     local by1, by2 = object.Drawer.coords.y, object.Drawer.coords.y + object.Drawer.size.height
     
-    if mx > bx1 and mx < bx2*0.5 and my > by1 and my < by2*0.75 then
+    if mx > bx1 and mx < bx2*0.5 and my > by1 and my < by2*0.9 then
       object.following = not object.following
     else
       object.Stamp.inScreen = true

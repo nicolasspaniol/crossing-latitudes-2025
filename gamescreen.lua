@@ -17,6 +17,8 @@ GS.json = {"assets/points1.json", "assets/points2.json", "assets/points3.json"}
 GS.currIDX = 1
 GS.printSomething = nil
 GS.timerPS = 0
+GS.font = love.graphics.newFont("assets/pixelated.ttf", 80)
+GS.font:setFilter("nearest", "nearest")
 
 GS.load = function(news, request, cjson, document)
   local img = love.graphics.newImage(news)
@@ -108,10 +110,10 @@ GS.update = function(dt)
   end
   if GS.timerPS > 3 then
     GS.printSomething = nil
-    GS.timePS = 0
+    GS.timerPS = 0
   end
   local mx, my = love.mouse.getPosition()
-  print(mx, my)
+  -- print(mx, my)
   GS.doc:update(mx, my, dt)
   GS.ResetButton:update(mx, my, dt)
   GS.SendButton:update(mx, my, dt)
@@ -147,11 +149,18 @@ GS.draw2 = function(inCanvas, xCanvas, yCanvas, Canvas)
   
 
   if GS.printSomething == "vitoria" then
-    love.graphics.setFont(love.graphics.newFont(40))
-    love.graphics.printf("YOU'VE DONE IT!!", 0, 0, 100000)
+    love.graphics.setFont(GS.font)
+    love.graphics.setBlendMode( "alpha", "alphamultiply")
+    love.graphics.setColor(0,1,0,1)
+    
+    love.graphics.printf("YOU'VE DONE IT!", 300, 300, 100000, "left", 0)
   elseif GS.printSomething == "derrota" then
-    love.graphics.setFont(love.graphics.newFont(40))
-    love.graphics.printf("TOO BAD. AGAIN...", 0, 0, 100000)
+    love.graphics.setBlendMode( "alpha", "alphamultiply")
+    -- love.graphics.setFont(love.graphics.newFont(40))
+    love.graphics.setFont(GS.font)
+    love.graphics.setColor(1,0,0,1)
+    -- GS.font:setFilter("nearest", "nearest")
+    love.graphics.printf("TOO BAD. AGAIN...", 300, 300, 100000, "left", 0)--, 5, 5)
   else
     GS.timerPS = 0
   end
@@ -171,8 +180,9 @@ GS.mousepressed = function(x, y, key)
   for _, stamp in ipairs(GS.Drawer.stamps) do
     if stamp.following then return end
   end
+  if GS.RB.drawUI then GS.colSrc:cancelSelection(); return end
   if GS.currentCollage then
-    print(inspect(GS.currentCollage))
+    -- print(inspect(GS.currentCollage))
     if GS.doc:isHovering(x, y) then
       local x1, y1 = GS.colSrc.transform:transformPoint(0,0)
       GS.currentCollage.rel:translate(x - GS.doc.button.coords.x -x1, y - GS.doc.button.coords.y - y1)
@@ -182,6 +192,7 @@ GS.mousepressed = function(x, y, key)
       GS.doc:mousepressed(x, y, key, GS.collages, GS.currentCollage)
       GS.doc:draw()
       GS.doc:mousepressed(x, y, key, GS.collages, GS.currentCollage)
+      
     else
       GS.currentCollage:mousepressed(x, y, key)
       GS.currentCollage = nil
@@ -209,9 +220,9 @@ GS.mousepressed = function(x, y, key)
 end
 
 GS.keypressed = function(key)
-  if key == 'q' then
-    love.event.quit()
-  end
+  -- if key == 'q' then
+  --   love.event.quit()
+  -- end
   if key == 'escape' then
     GS.colSrc:cancelSelection()
   end
@@ -222,31 +233,31 @@ GS.ScanDocument = function()
   local y = GS.doc.button.coords.y + GS.doc.button.size.height/2
   if x > 1102 and  x < 1202 and y > 126 and y < 226 then
     local points_sum = 0
-    local v_number = 0
+    local v_number = { 4, 6, 4 }
     for i=1, #GS.collages do
       
-      v_number = v_number + 1
+      -- v_number = v_number + 1
       for name, value in pairs(GS.collages[i].labels)  do
         
-        print(points_sum, name)
+        
         if string.find(name, "widearea") then
-          points_sum = points_sum - value
+          points_sum = points_sum - value 
         else
-          points_sum = points_sum + value
+          points_sum = points_sum + value 
         end
+        print(points_sum, name)
       end
-      if v_number == 0 then v_number = 1 end
+      -- if v_number == 0 then v_number = 1 end
      
       print(points_sum, #GS.collages[i].labels)
     end
-     points_sum = points_sum / v_number
+     points_sum = points_sum / v_number[GS.currIDX]
     print(points_sum)
-    if points_sum > 0.6 then
+    if points_sum > 0 then
       GS.printSomething = "vitoria"
-      GS.currIDX = GS.currIDX + 1
-      if GS.currIDX <= 3 then
-        GS.load(GS.news[GS.currIDX], GS.request[GS.currIDX], GS.json[GS.currIDX], GS.document[GS.currIDX])
-      end
+      GS.currIDX = GS.currIDX % 3 + 1 
+      GS.load(GS.news[GS.currIDX], GS.request[GS.currIDX], GS.json[GS.currIDX], GS.document[GS.currIDX])
+      
     else
       GS.printSomething = "derrota"
       print(GS.news[GS.currIDX], GS.request[GS.currIDX], GS.json[GS.currIDX], GS.document[GS.currIDX])

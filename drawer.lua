@@ -14,7 +14,7 @@ Drawer.createEntities = function(bx, by, bw, bh, images, openImage, closeImage, 
   
   Drawer.stamps = {}
   for i = 1, #images do
-    table.insert(Drawer.stamps, Stamps:new(stx1 + 0.8*((i-1) %2)*(bx + bw)/4, sty1 + stampSize*(i-1), stampSize, stampSize, 
+    table.insert(Drawer.stamps, Stamps:new(stx1 + 0.8*((i-1) %2)*(bx + bw)/4, sty1 + 0.9*stampSize*(i-1), stampSize, stampSize, 
       bx, by, bw, bh, stampWidthRatio*stampSize, stampHeightRatio*stampSize, images[i][1], images[i][2]))
   end
   local _, _, buttonSize1, buttonSize2 = openImage.quads[1]:getViewport()

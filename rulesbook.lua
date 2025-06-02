@@ -107,7 +107,7 @@ RB.update = function(self, mx, my, dt)
 
     local x1, x2 = self.AccessButton.coords.x, self.AccessButton.coords.x + self.AccessButton.size.width
     local y1, y2 = self.AccessButton.coords.y, self.AccessButton.coords.y + self.AccessButton.size.height
-    if mx > x1 and mx < x2 and my > y1 and my < y2 then 
+    if mx > x1 + 50 and mx < x2 + 50 and my > y1 + 50 and my < y2 + 50 then 
       if not self.buttonHovered then self.ABUpdate = true end
       self.buttonHovered = true
       -- self.drawPageUpdate = true
