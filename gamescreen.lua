@@ -22,9 +22,7 @@ GS.font:setFilter("nearest", "nearest")
 
 GS.load = function(news, request, cjson, document)
   local img = love.graphics.newImage(news)
-  local f = io.open(cjson, "r")
-  local points = json.decode(f:read("*a"))
-  f:close()
+  local points = json.decode(love.filesystem.read(cjson))
   x1, y1 = 300, 50
   GS.doc = Document.new(800, 200, 300, 200, love.graphics.newImage(document))
   GS.colSrc = CollageSource.new(love.graphics.newImage(news), points)
