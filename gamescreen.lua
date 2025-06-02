@@ -253,7 +253,7 @@ GS.ScanDocument = function()
     end
      points_sum = points_sum / v_number[GS.currIDX]
     print(points_sum)
-    if points_sum > 0 then
+    if points_sum > 0.6 then
       GS.printSomething = "vitoria"
       GS.currIDX = GS.currIDX % 3 + 1 
       GS.load(GS.news[GS.currIDX], GS.request[GS.currIDX], GS.json[GS.currIDX], GS.document[GS.currIDX])
