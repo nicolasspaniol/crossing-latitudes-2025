@@ -180,6 +180,7 @@ GS.mousepressed = function(x, y, key)
   for _, stamp in ipairs(GS.Drawer.stamps) do
     if stamp.following then return end
   end
+  if GS.RB.drawUI then GS.colSrc:cancelSelection(); return end
   if GS.currentCollage then
     -- print(inspect(GS.currentCollage))
     if GS.doc:isHovering(x, y) then
@@ -191,6 +192,7 @@ GS.mousepressed = function(x, y, key)
       GS.doc:mousepressed(x, y, key, GS.collages, GS.currentCollage)
       GS.doc:draw()
       GS.doc:mousepressed(x, y, key, GS.collages, GS.currentCollage)
+      
     else
       GS.currentCollage:mousepressed(x, y, key)
       GS.currentCollage = nil
@@ -218,9 +220,9 @@ GS.mousepressed = function(x, y, key)
 end
 
 GS.keypressed = function(key)
-  if key == 'q' then
-    love.event.quit()
-  end
+  -- if key == 'q' then
+  --   love.event.quit()
+  -- end
   if key == 'escape' then
     GS.colSrc:cancelSelection()
   end
@@ -253,10 +255,9 @@ GS.ScanDocument = function()
     print(points_sum)
     if points_sum > 0 then
       GS.printSomething = "vitoria"
-      GS.currIDX = GS.currIDX + 1
-      if GS.currIDX <= 3 then
-        GS.load(GS.news[GS.currIDX], GS.request[GS.currIDX], GS.json[GS.currIDX], GS.document[GS.currIDX])
-      end
+      GS.currIDX = GS.currIDX % 3 + 1 
+      GS.load(GS.news[GS.currIDX], GS.request[GS.currIDX], GS.json[GS.currIDX], GS.document[GS.currIDX])
+      
     else
       GS.printSomething = "derrota"
       print(GS.news[GS.currIDX], GS.request[GS.currIDX], GS.json[GS.currIDX], GS.document[GS.currIDX])
